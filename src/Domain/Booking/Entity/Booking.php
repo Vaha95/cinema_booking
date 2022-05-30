@@ -28,6 +28,10 @@ class Booking
     #[ORM\JoinColumn(nullable: false)]
     private $session;
 
+    #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $session;
+
     public function getId(): ?int
     {
         return $this->id;
