@@ -21,6 +21,10 @@ class Session
     #[ORM\Column(type: 'datetime_immutable')]
     private $startAt;
 
+    #[ORM\ManyToOne(targetEntity: CinemaHall::class, inversedBy: 'sessions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $cinemaHall;
+
     public function __construct()
     {
         $this->bookings = new ArrayCollection();
@@ -57,6 +61,18 @@ class Session
     public function setStartAt(\DateTimeImmutable $startAt): self
     {
         $this->startAt = $startAt;
+
+        return $this;
+    }
+
+    public function getCinemaHall(): CinemaHall
+    {
+        return $this->cinemaHall;
+    }
+
+    public function setCinemaHall(CinemaHall $cinemaHall): self
+    {
+        $this->cinemaHall = $cinemaHall;
 
         return $this;
     }
