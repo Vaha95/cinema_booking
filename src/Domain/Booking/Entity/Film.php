@@ -2,6 +2,7 @@
 
 namespace App\Domain\Booking\Entity;
 
+use App\Domain\Booking\Entity\TransferObject\FilmDTO;
 use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,15 +19,17 @@ class Film
     #[ORM\OneToMany(mappedBy: 'film', targetEntity: Session::class)]
     private $sessions;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private $name;
 
     #[ORM\Column(type: 'integer')]
     private $duration;
 
-    public function __construct()
+    public function __construct(FilmDTO $filmDTO)
     {
         $this->sessions = new ArrayCollection();
+        $this->setName($filmDTO->name);
+        $this->setDuration($filmDTO->duration);
     }
 
     public function getId(): ?int
