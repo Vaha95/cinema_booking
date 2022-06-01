@@ -7,58 +7,51 @@ use App\Domain\Booking\Repository\CinemaHallRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CinemaHallRepository::class)]
 class CinemaHall
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Column(type: "uuid", unique: true)]
+    private Uuid $id;
 
     #[ORM\Column(type: 'integer')]
-    private $hallCapacity;
+    private int $hallCapacity;
 
     #[ORM\OneToMany(mappedBy: 'cinemaHall', targetEntity: Session::class)]
-    private $sessions;
+    private Collection $sessions;
 
     public function __construct(CinemaHallDTO $cinemaHallDTO)
     {
         $this->sessions = new ArrayCollection();
+        $this->setId($cinemaHallDTO->id);
         $this->setHallCapacity($cinemaHallDTO->hallCapacity);
     }
 
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
 
-    public function getHallCapacity(): ?int
+    public function getHallCapacity(): int
     {
         return $this->hallCapacity;
     }
 
-    public function setHallCapacity(int $hallCapacity): self
-    {
-        $this->hallCapacity = $hallCapacity;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Session>
-     */
     public function getSessions(): Collection
     {
         return $this->sessions;
     }
 
-    public function addSession(Session $session): self
+    private function setId(Uuid $id): void
     {
-        if (!$this->sessions->contains($session)) {
-            $this->sessions[] = $session;
-            $session->setCinemaHall($this);
-        }
+        $this->id = $id;
+    }
+
+    private function setHallCapacity(int $hallCapacity): self
+    {
+        $this->hallCapacity = $hallCapacity;
 
         return $this;
     }

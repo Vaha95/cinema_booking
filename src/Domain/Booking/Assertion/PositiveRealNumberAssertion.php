@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Booking\Validator;
+namespace App\Domain\Booking\Assertion;
 
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
 
-class PositiveRealNumberValidator
+class PositiveRealNumberAssertion
 {
     public static function validate(int $value): void
     {

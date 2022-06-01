@@ -7,32 +7,33 @@ use App\Domain\Booking\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 class Film
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Column(type: "uuid", unique: true)]
+    private Uuid $id;
 
     #[ORM\OneToMany(mappedBy: 'film', targetEntity: Session::class)]
-    private $sessions;
+    private Collection $sessions;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'integer')]
-    private $duration;
+    private int $duration;
 
     public function __construct(FilmDTO $filmDTO)
     {
         $this->sessions = new ArrayCollection();
+        $this->setId($filmDTO->id);
         $this->setName($filmDTO->name);
         $this->setDuration($filmDTO->duration);
     }
 
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
@@ -45,49 +46,28 @@ class Film
         return $this->sessions;
     }
 
-    public function addSession(Session $session): self
-    {
-        if (!$this->sessions->contains($session)) {
-            $this->sessions[] = $session;
-            $session->setFilm($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSession(Session $session): self
-    {
-        if ($this->sessions->removeElement($session)) {
-            // set the owning side to null (unless already changed)
-            if ($session->getFilm() === $this) {
-                $session->setFilm(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDuration(): ?int
+    public function getDuration(): int
     {
         return $this->duration;
     }
 
-    public function setDuration(int $duration): self
+    private function setId(Uuid $id): void
+    {
+        $this->id = $id;
+    }
+
+    private function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    private function setDuration(int $duration): void
     {
         $this->duration = $duration;
-
-        return $this;
     }
 }
