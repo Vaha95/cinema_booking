@@ -2,23 +2,23 @@
 
 namespace App\Domain\Booking\Entity\TransferObject;
 
+use App\Domain\Booking\Entity\CinemaHall;
+use App\Domain\Booking\Entity\Film;
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
-use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
 use Symfony\Component\Uid\Uuid;
 
-class CinemaHallDTO
+class SessionDTO
 {
     public Uuid $id;
 
     /**
-     * @param int $hallCapacity
-     *
      * @throws NotPositiveRealNumberException
      */
-    public function __construct(public readonly int $hallCapacity)
-    {
-        PositiveRealNumberAssertion::validate($hallCapacity);
-
+    public function __construct(
+        public readonly Film $film,
+        public readonly CinemaHall $cinemaHall,
+        public readonly \DateTimeImmutable $startAt
+    ) {
         $this->id = Uuid::v4();
     }
 }

@@ -3,26 +3,20 @@
 namespace App\Domain\Booking\Entity\TransferObject;
 
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
-use App\Domain\Booking\Validator\PositiveRealNumberValidator;
+use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
+use Symfony\Component\Uid\Uuid;
 
 class FilmDTO
 {
-    public string $name;
-    public int $duration;
+    public Uuid $id;
 
     /**
-     * @param string $name
-     * @param int $duration
-     *
      * @throws NotPositiveRealNumberException
      */
-    public function __construct(string $name, int $duration)
+    public function __construct(public readonly string $name, public readonly int $duration)
     {
-        PositiveRealNumberValidator::validate($duration);
+        PositiveRealNumberAssertion::validate($duration);
 
-        $this->name = $name;
-        $this->duration = $duration;
+        $this->id = Uuid::v4();
     }
-
-
 }

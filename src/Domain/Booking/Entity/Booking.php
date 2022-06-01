@@ -5,60 +5,42 @@ namespace App\Domain\Booking\Entity;
 use App\Domain\Booking\Entity\ValueObject\Customer;
 use App\Domain\Booking\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ORM\Table(name: 'booking')]
 class Booking
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Column(type: "uuid", unique: true)]
+    private Uuid $id;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $bookingDateTime;
+    private \DateTimeImmutable $bookingDateTime;
 
     #[ORM\Embedded(class: 'App\Domain\Booking\Entity\ValueObject\Customer', columnPrefix: 'customer_')]
-    private $customer;
+    private Customer $customer;
 
     #[ORM\Column(type: 'integer')]
-    private $countOfSeats;
+    private int $countOfSeats;
 
     #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    private $session;
+    private Session $session;
 
-    #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $session;
-
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
 
-    public function getBookingDateTime(): ?\DateTimeImmutable
+    public function getBookingDateTime(): \DateTimeImmutable
     {
         return $this->bookingDateTime;
     }
 
-    public function setBookingDateTime(\DateTimeImmutable $bookingDateTime): self
-    {
-        $this->bookingDateTime = $bookingDateTime;
-
-        return $this;
-    }
-
-    public function getCountOfSeats(): ?int
+    public function getCountOfSeats(): int
     {
         return $this->countOfSeats;
-    }
-
-    public function setCountOfSeats(int $countOfSeats): self
-    {
-        $this->countOfSeats = $countOfSeats;
-
-        return $this;
     }
 
     public function getCustomer(): Customer
@@ -66,20 +48,28 @@ class Booking
         return $this->customer;
     }
 
-    public function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
-    }
-
-    public function getSession(): ?Session
+    public function getSession(): Session
     {
         return $this->session;
     }
 
-    public function setSession(?Session $session): self
+    private function setBookingDateTime(\DateTimeImmutable $bookingDateTime): void
+    {
+        $this->bookingDateTime = $bookingDateTime;
+    }
+
+    private function setCountOfSeats(int $countOfSeats): void
+    {
+        $this->countOfSeats = $countOfSeats;
+    }
+
+    private function setCustomer(Customer $customer): void
+    {
+        $this->customer = $customer;
+    }
+
+    private function setSession(?Session $session): void
     {
         $this->session = $session;
-
-        return $this;
     }
 }
