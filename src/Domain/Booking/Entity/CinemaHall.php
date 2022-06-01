@@ -2,6 +2,7 @@
 
 namespace App\Domain\Booking\Entity;
 
+use App\Domain\Booking\Entity\TransferObject\CinemaHallDTO;
 use App\Repository\CinemaHallRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,9 +22,10 @@ class CinemaHall
     #[ORM\OneToMany(mappedBy: 'cinemaHall', targetEntity: Session::class)]
     private $sessions;
 
-    public function __construct()
+    public function __construct(CinemaHallDTO $cinemaHallDTO)
     {
         $this->sessions = new ArrayCollection();
+        $this->setHallCapacity($cinemaHallDTO->hallCapacity);
     }
 
     public function getId(): ?int
