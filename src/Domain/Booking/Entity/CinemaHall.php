@@ -3,7 +3,7 @@
 namespace App\Domain\Booking\Entity;
 
 use App\Domain\Booking\Entity\TransferObject\CinemaHallDTO;
-use App\Repository\CinemaHallRepository;
+use App\Domain\Booking\Repository\CinemaHallRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

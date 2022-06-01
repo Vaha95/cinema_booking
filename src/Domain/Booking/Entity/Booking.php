@@ -3,7 +3,7 @@
 namespace App\Domain\Booking\Entity;
 
 use App\Domain\Booking\Entity\ValueObject\Customer;
-use App\Repository\BookingRepository;
+use App\Domain\Booking\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
@@ -22,7 +22,7 @@ class Booking
     private $customer;
 
     #[ORM\Column(type: 'integer')]
-    private $numberOfSeats;
+    private $countOfSeats;
 
     #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
@@ -45,14 +45,14 @@ class Booking
         return $this;
     }
 
-    public function getNumberOfSeats(): ?int
+    public function getCountOfSeats(): ?int
     {
-        return $this->numberOfSeats;
+        return $this->countOfSeats;
     }
 
-    public function setNumberOfSeats(int $numberOfSeats): self
+    public function setCountOfSeats(int $countOfSeats): self
     {
-        $this->numberOfSeats = $numberOfSeats;
+        $this->countOfSeats = $countOfSeats;
 
         return $this;
     }
