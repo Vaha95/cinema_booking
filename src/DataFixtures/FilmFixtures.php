@@ -12,7 +12,7 @@ class FilmFixtures extends Fixture
     public const FIXTURE_DATA = [
         ['name' => 'Ромашки - цветочки', 'duration' => 110],
         ['name' => 'Васильки - бабочки', 'duration' => 130],
-        ['name' => 'Фантастичекий мир', 'duration' => 114],
+        ['name' => 'Фантастический мир', 'duration' => 114],
         ['name' => 'Необычный фильм', 'duration' => 120],
         ['name' => 'Кошечки - собачки', 'duration' => 110],
         ['name' => 'Лето', 'duration' => 101],

@@ -3,7 +3,7 @@
 namespace App\Domain\Booking\Entity;
 
 use App\Domain\Booking\Entity\TransferObject\FilmDTO;
-use App\Repository\FilmRepository;
+use App\Domain\Booking\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
