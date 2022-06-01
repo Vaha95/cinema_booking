@@ -3,7 +3,7 @@
 namespace App\Domain\Booking\View;
 
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
-use App\Domain\Booking\Validator\PositiveRealNumberValidator;
+use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
 
 class SessionView
 {
@@ -26,7 +26,7 @@ class SessionView
      */
     public function __construct(public readonly string $name, public readonly int $freePlaces, \DateTimeImmutable $startAt, int $duration)
     {
-        PositiveRealNumberValidator::validate($duration);
+        PositiveRealNumberAssertion::validate($duration);
 
         $preTransformEndAt = new \DateTime($startAt->format(\DateTimeInterface::ATOM));
 

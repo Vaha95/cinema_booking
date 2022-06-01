@@ -8,11 +8,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Session>
- *
- * @method Session|null find($id, $lockMode = null, $lockVersion = null)
- * @method Session|null findOneBy(array $criteria, array $orderBy = null)
- * @method Session[]    findAll()
- * @method Session[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class SessionRepository extends ServiceEntityRepository
 {
@@ -33,8 +28,8 @@ class SessionRepository extends ServiceEntityRepository
         $qb
             ->select($select)
             ->innerJoin('session.film', 'film')
-        ->where('session.startAt > :currentDate')
-        ->setParameter(':currentDate', ((new \DateTime())->format('Y-m-d')));
+            ->where('session.startAt > :currentDate')
+            ->setParameter(':currentDate', ((new \DateTime())->format('Y-m-d')));
 
         return $qb->getQuery()->getResult();
     }
@@ -52,6 +47,7 @@ class SessionRepository extends ServiceEntityRepository
             ->leftJoin('subSession.bookings', 'bookings')
             ->groupBy('subSession.id')
             ->having('session.id = subSession.id');
+
         return $qb->getDQL();
     }
 }

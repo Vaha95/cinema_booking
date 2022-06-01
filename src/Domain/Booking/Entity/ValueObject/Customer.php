@@ -8,10 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Customer
 {
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private readonly string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $phone;
+    private readonly string $phone;
 
     public function __construct(string $name, string $phone)
     {
@@ -24,22 +24,8 @@ class Customer
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getPhone(): ?string
     {
         return $this->phone;
-    }
-
-    public function setPhone(string $phone): self
-    {
-        $this->phone = $phone;
-
-        return $this;
     }
 }
