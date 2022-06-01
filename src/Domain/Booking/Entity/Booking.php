@@ -24,6 +24,10 @@ class Booking
     #[ORM\Column(type: 'integer')]
     private $numberOfSeats;
 
+    #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $session;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,5 +65,17 @@ class Booking
     public function setCustomer(Customer $customer): void
     {
         $this->customer = $customer;
+    }
+
+    public function getSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    public function setSession(?Session $session): self
+    {
+        $this->session = $session;
+
+        return $this;
     }
 }
