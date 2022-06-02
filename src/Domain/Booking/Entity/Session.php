@@ -2,7 +2,6 @@
 
 namespace App\Domain\Booking\Entity;
 
-use App\Domain\Booking\Entity\TransferObject\SessionDTO;
 use App\Domain\Booking\Repository\SessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,13 +29,13 @@ class Session
     #[ORM\JoinColumn(nullable: false)]
     private Film $film;
 
-    public function __construct(SessionDTO $sessionDTO)
+    public function __construct(Uuid $id, Film $film, CinemaHall $cinemaHall, \DateTimeImmutable $startAt)
     {
+        $this->id = $id;
+        $this->film = $film;
+        $this->startAt = $startAt;
+        $this->cinemaHall = $cinemaHall;
         $this->bookings = new ArrayCollection();
-        $this->setId($sessionDTO->id);
-        $this->setFilm($sessionDTO->film);
-        $this->setCinemaHall($sessionDTO->cinemaHall);
-        $this->setStartAt($sessionDTO->startAt);
     }
 
     public function getId(): Uuid
@@ -62,25 +61,5 @@ class Session
     private function getFilm(): Film
     {
         return $this->film;
-    }
-
-    private function setId(Uuid $id): void
-    {
-        $this->id = $id;
-    }
-
-    private function setStartAt(\DateTimeImmutable $startAt): void
-    {
-        $this->startAt = $startAt;
-    }
-
-    private function setCinemaHall(CinemaHall $cinemaHall): void
-    {
-        $this->cinemaHall = $cinemaHall;
-    }
-
-    private function setFilm(Film $film): void
-    {
-        $this->film = $film;
     }
 }
