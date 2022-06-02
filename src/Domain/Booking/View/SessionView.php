@@ -26,7 +26,7 @@ class SessionView
      */
     public function __construct(public readonly string $name, public readonly int $freePlaces, \DateTimeImmutable $startAt, int $duration)
     {
-        PositiveRealNumberAssertion::validate($duration);
+        PositiveRealNumberAssertion::assert($duration);
 
         $preTransformEndAt = new \DateTime($startAt->format(\DateTimeInterface::ATOM));
 

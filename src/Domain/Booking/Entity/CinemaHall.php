@@ -2,7 +2,7 @@
 
 namespace App\Domain\Booking\Entity;
 
-use App\Domain\Booking\Entity\TransferObject\CinemaHallDTO;
+use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
 use App\Domain\Booking\Repository\CinemaHallRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -22,11 +22,13 @@ class CinemaHall
     #[ORM\OneToMany(mappedBy: 'cinemaHall', targetEntity: Session::class)]
     private Collection $sessions;
 
-    public function __construct(CinemaHallDTO $cinemaHallDTO)
+    public function __construct(Uuid $id, int $hallCapacity)
     {
+        PositiveRealNumberAssertion::assert($hallCapacity);
+
+        $this->id = $id;
+        $this->hallCapacity = $hallCapacity;
         $this->sessions = new ArrayCollection();
-        $this->setId($cinemaHallDTO->id);
-        $this->setHallCapacity($cinemaHallDTO->hallCapacity);
     }
 
     public function getId(): Uuid
@@ -42,17 +44,5 @@ class CinemaHall
     public function getSessions(): Collection
     {
         return $this->sessions;
-    }
-
-    private function setId(Uuid $id): void
-    {
-        $this->id = $id;
-    }
-
-    private function setHallCapacity(int $hallCapacity): self
-    {
-        $this->hallCapacity = $hallCapacity;
-
-        return $this;
     }
 }
