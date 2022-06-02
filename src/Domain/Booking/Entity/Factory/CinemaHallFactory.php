@@ -3,8 +3,8 @@
 namespace App\Domain\Booking\Entity\Factory;
 
 use App\Domain\Booking\Entity\CinemaHall;
-use App\Domain\Booking\Entity\TransferObject\CinemaHallDTO;
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
+use Symfony\Component\Uid\Uuid;
 
 class CinemaHallFactory
 {
@@ -17,8 +17,6 @@ class CinemaHallFactory
      */
     static public function create(int $hallCapacity): CinemaHall
     {
-        $cinemaHallDTO = new CinemaHallDTO($hallCapacity);
-
-        return new CinemaHall($cinemaHallDTO);
+        return new CinemaHall(Uuid::v4(), $hallCapacity);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Domain\Booking\Entity;
 
-use App\Domain\Booking\Entity\TransferObject\FilmDTO;
 use App\Domain\Booking\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,12 +24,12 @@ class Film
     #[ORM\Column(type: 'integer')]
     private int $duration;
 
-    public function __construct(FilmDTO $filmDTO)
+    public function __construct(Uuid $id, string $name, int $duration)
     {
+        $this->id = $id;
+        $this->name = $name;
+        $this->duration = $duration;
         $this->sessions = new ArrayCollection();
-        $this->setId($filmDTO->id);
-        $this->setName($filmDTO->name);
-        $this->setDuration($filmDTO->duration);
     }
 
     public function getId(): Uuid
@@ -54,20 +53,5 @@ class Film
     public function getDuration(): int
     {
         return $this->duration;
-    }
-
-    private function setId(Uuid $id): void
-    {
-        $this->id = $id;
-    }
-
-    private function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    private function setDuration(int $duration): void
-    {
-        $this->duration = $duration;
     }
 }
