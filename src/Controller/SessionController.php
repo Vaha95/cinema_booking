@@ -4,18 +4,19 @@ namespace App\Controller;
 
 use App\Domain\Booking\Command\BookingCommand;
 use App\Domain\Booking\Entity\Session;
+use App\Domain\Booking\Exception\BookingNotAvailableException;
+use App\Domain\Booking\Exception\Handler\RenderCardByExceptionsHandler;
+use App\Domain\Booking\Exception\InsufficientlyFreePlacesException;
 use App\Domain\Booking\Form\BookingType;
 use App\Domain\Booking\View\Factory\SessionViewFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SessionController extends AbstractController
+class SessionController extends Controller
 {
     private EntityRepository $sessionRepository;
 
@@ -28,7 +29,7 @@ class SessionController extends AbstractController
     public function index(): Response
     {
         return $this->render('session/index.html.twig', [
-            'sessions' => $this->sessionViewFactory->createByCollection($this->sessionRepository->findAllAgregate()),
+            'sessions' => $this->sessionViewFactory->createByCollection($this->sessionRepository->findAll()),
         ]);
     }
 
@@ -43,16 +44,20 @@ class SessionController extends AbstractController
         $bookingForm->submit($request->request->all());
 
         if ($bookingForm->isSubmitted() && $bookingForm->isValid()) {
-            $bus->dispatch($command);
-            return $this->render('default/card_info.html.twig', [
-                'title' => $command->name,
-                'description' => $command->phone,
-            ]);
+            try {
+                $bus->dispatch($command);
+            } catch (\Exception $exception) {
+                switch (get_class($exception->getPrevious())) {
+                    case BookingNotAvailableException::class:
+                        return $this->renderCardByExceptions($exception->getPrevious(), 'Бронирование временно недоступно.');
+                    case InsufficientlyFreePlacesException::class:
+                        return $this->renderCardByExceptions($exception->getPrevious(), 'Недостаточно свободных мест.');
+                }
+            }
+
+            return $this->renderInfoCard('Бронь успешно создана');
         }
 
-        return $this->render('default/card_info.html.twig', [
-            'title' => 'Некорректные входные данные',
-            'description' => '',
-        ]);
+        return $this->renderInfoCard('Некорректные входные данные');
     }
 }

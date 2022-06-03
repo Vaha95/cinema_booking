@@ -4,6 +4,7 @@ namespace App\Domain\Booking\Entity;
 
 use App\Domain\Booking\Entity\Factory\BookingFactory;
 use App\Domain\Booking\Entity\Factory\CustomerFactory;
+use App\Domain\Booking\Exception\InsufficientlyFreePlacesException;
 use App\Domain\Booking\Repository\SessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -60,13 +61,30 @@ class Session
         return $this->cinemaHall;
     }
 
-    private function getFilm(): Film
+    public function getFilm(): Film
     {
         return $this->film;
     }
 
+    public function getFreePlaces(): int
+    {
+        $occupiedPlaces = 0;
+
+        foreach ($this->bookings as $booking) {
+            /* @var Booking $booking */
+            $occupiedPlaces += $booking->getCountOfSeats();
+        }
+
+        return $this->cinemaHall->getHallCapacity() - $occupiedPlaces;
+    }
+
     public function bookingOrder(int $countOfSeats, string $name, string $phone): void
     {
+        $freePlaces = $this->getFreePlaces();
+        if ($freePlaces < $countOfSeats) {
+            throw new InsufficientlyFreePlacesException(sprintf('free places: %d, seats requested: %d', $freePlaces, $countOfSeats));
+        }
+
         $customer = CustomerFactory::create($name, $phone);
         $this->bookings->add(BookingFactory::create($countOfSeats, $customer, $this));
     }

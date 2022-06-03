@@ -13,20 +13,8 @@ class SessionViewFactory
      * @throws \Exception
      * @throws NotPositiveRealNumberException
      */
-    public function createByCollection(iterable $sessions): array
+    public function createByCollection(array $sessions): array
     {
-        $sessionViews = [];
-
-        foreach ($sessions as $session) {
-            $sessionViews[] = new SessionView(
-                $session['id'],
-                $session['name'],
-                $session['freePlaces'],
-                $session['startAt'],
-                $session['duration']
-            );
-        }
-
-        return $sessionViews;
+        return array_map(fn($session) => new SessionView($session), $sessions);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Booking\Entity;
 
+use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
 use App\Domain\Booking\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +27,8 @@ class Film
 
     public function __construct(Uuid $id, string $name, int $duration)
     {
+        PositiveRealNumberAssertion::assert($duration);
+
         $this->id = $id;
         $this->name = $name;
         $this->duration = $duration;

@@ -2,36 +2,43 @@
 
 namespace App\Domain\Booking\View;
 
+use App\Domain\Booking\Entity\Session;
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
 use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
 use Symfony\Component\Uid\Uuid;
 
 class SessionView
 {
-    public readonly string $startAt;
-    public readonly string $endAt;
+    public readonly Uuid $id;
     public readonly string $date;
+    public readonly string $name;
+    public readonly string $endAt;
+    public readonly string $startAt;
+    public readonly int $freePlaces;
     public readonly string $duration;
 
-    const HOURS_AND_MINUTES_DATETIME_FORMAT = 'H:i';
-    const RUS_MONTHS_DICTIONARY = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+    private const HOURS_AND_MINUTES_DATETIME_FORMAT = 'H:i';
+    private const RUS_MONTHS_DICTIONARY = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
     /**
      * @throws \Exception
      * @throws NotPositiveRealNumberException
      */
-    public function __construct(public readonly Uuid $id, public readonly string $name, public readonly int $freePlaces, \DateTimeImmutable $startAt, int $duration)
+    public function __construct(Session $session)
     {
-        PositiveRealNumberAssertion::assert($duration);
+        $this->id = $session->getId();
+        $this->name = $session->getFilm()->getName();
+        $duration = $session->getFilm()->getDuration();
+        $this->freePlaces = $session->getFreePlaces();
+        $this->duration = $this->getDuration($duration);
 
+        $startAt = $session->getStartAt();
         $preTransformEndAt = new \DateTime($startAt->format(\DateTimeInterface::ATOM));
-
         $this->startAt = $startAt->format('H:i');
         $this->endAt = $preTransformEndAt
             ->modify(sprintf('+ %d minutes', $duration))
             ->format(self::HOURS_AND_MINUTES_DATETIME_FORMAT);
         $this->date = $this->dateToStringFormatter($startAt);
-        $this->duration = $this->getDuration($duration);
     }
 
     private function getDuration(int $duration): string

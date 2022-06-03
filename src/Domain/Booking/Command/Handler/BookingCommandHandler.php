@@ -3,6 +3,7 @@
 namespace App\Domain\Booking\Command\Handler;
 
 use App\Domain\Booking\Command\BookingCommand;
+use App\Domain\Booking\Exception\BookingNotAvailableException;
 use App\Factory\FlockFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Lock\SharedLockInterface;
@@ -24,13 +25,13 @@ class BookingCommandHandler
         $lock = $this->flockFactory::create()->createLock('booking');
 
         if (!$lock->acquire() && !$this->checkLockAvailability($lock)) {
-            /*todo Исключение*/
+            throw new BookingNotAvailableException();
         }
 
         $command->session->bookingOrder(
-         $command->places,
-         $command->name,
-         $command->phone
+            $command->places,
+            $command->name,
+            $command->phone
         );
 
         $this->entityManager->flush();
