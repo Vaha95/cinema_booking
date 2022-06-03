@@ -19,6 +19,7 @@ class SessionViewFactory
 
         foreach ($sessions as $session) {
             $sessionViews[] = new SessionView(
+                $session['id'],
                 $session['name'],
                 $session['freePlaces'],
                 $session['startAt'],

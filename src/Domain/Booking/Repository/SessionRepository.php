@@ -5,15 +5,25 @@ namespace App\Domain\Booking\Repository;
 use App\Domain\Booking\Entity\Session;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 
 /**
  * @extends ServiceEntityRepository<Session>
  */
 class SessionRepository extends ServiceEntityRepository
 {
+    private ObjectManager $entityManager;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Session::class);
+        $this->entityManager = $registry->getManager();
+    }
+
+    public function save(Session $session): void
+    {
+        $this->entityManager->persist($session);
+        $this->entityManager->flush();
     }
 
     public function findAllAgregate()
@@ -21,7 +31,7 @@ class SessionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('session');
 
         $select = sprintf(
-            'session.startAt, film.duration, film.name, (%s) AS freePlaces',
+            'session.id, session.startAt, film.duration, film.name, (%s) AS freePlaces',
             $this->queryFreePlacesCount()
         );
 

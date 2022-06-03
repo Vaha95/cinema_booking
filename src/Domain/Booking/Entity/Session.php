@@ -2,6 +2,8 @@
 
 namespace App\Domain\Booking\Entity;
 
+use App\Domain\Booking\Entity\Factory\BookingFactory;
+use App\Domain\Booking\Entity\Factory\CustomerFactory;
 use App\Domain\Booking\Repository\SessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,7 +17,7 @@ class Session
     #[ORM\Column(type: "uuid", unique: true)]
     private Uuid $id;
 
-    #[ORM\OneToMany(mappedBy: 'session', targetEntity: Booking::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'session', targetEntity: Booking::class, cascade: ["persist"], orphanRemoval: true)]
     private Collection $bookings;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -61,5 +63,11 @@ class Session
     private function getFilm(): Film
     {
         return $this->film;
+    }
+
+    public function bookingOrder(int $countOfSeats, string $name, string $phone): void
+    {
+        $customer = CustomerFactory::create($name, $phone);
+        $this->bookings->add(BookingFactory::create($countOfSeats, $customer, $this));
     }
 }

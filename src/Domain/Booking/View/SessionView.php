@@ -4,6 +4,7 @@ namespace App\Domain\Booking\View;
 
 use App\Domain\Booking\Exception\NotPositiveRealNumberException;
 use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
+use Symfony\Component\Uid\Uuid;
 
 class SessionView
 {
@@ -16,15 +17,10 @@ class SessionView
     const RUS_MONTHS_DICTIONARY = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
     /**
-     * @param \DateTimeImmutable $startAt
-     * @param string $name
-     * @param int $duration
-     * @param int $freePlaces
-     *
      * @throws \Exception
      * @throws NotPositiveRealNumberException
      */
-    public function __construct(public readonly string $name, public readonly int $freePlaces, \DateTimeImmutable $startAt, int $duration)
+    public function __construct(public readonly Uuid $id, public readonly string $name, public readonly int $freePlaces, \DateTimeImmutable $startAt, int $duration)
     {
         PositiveRealNumberAssertion::assert($duration);
 
