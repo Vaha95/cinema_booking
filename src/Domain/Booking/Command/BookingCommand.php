@@ -3,8 +3,10 @@
 namespace App\Domain\Booking\Command;
 
 use App\Domain\Booking\Entity\Session;
+use App\Domain\Booking\Validator\Constraint\PlacesRequestExist;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[PlacesRequestExist(options: ['requiredPlacesField' => 'places', 'sessionField' => 'session'])]
 class BookingCommand
 {
     #[Assert\NotBlank]

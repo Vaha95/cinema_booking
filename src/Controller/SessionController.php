@@ -4,13 +4,11 @@ namespace App\Controller;
 
 use App\Domain\Booking\Command\BookingCommand;
 use App\Domain\Booking\Entity\Session;
-use App\Domain\Booking\Exception\BookingNotAvailableException;
-use App\Domain\Booking\Exception\Handler\RenderCardByExceptionsHandler;
-use App\Domain\Booking\Exception\InsufficientlyFreePlacesException;
 use App\Domain\Booking\Form\BookingType;
 use App\Domain\Booking\View\Factory\SessionViewFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -34,7 +32,7 @@ class SessionController extends Controller
     }
 
     #[Route('/booking', name: 'app_booking')]
-    public function booking(Request $request, MessageBusInterface $bus): Response
+    public function booking(Request $request, MessageBusInterface $bus, LoggerInterface $logger): Response
     {
         $command = new BookingCommand();
         $bookingForm = $this->createForm(BookingType::class, $command, [
@@ -44,16 +42,7 @@ class SessionController extends Controller
         $bookingForm->submit($request->request->all());
 
         if ($bookingForm->isSubmitted() && $bookingForm->isValid()) {
-            try {
-                $bus->dispatch($command);
-            } catch (\Exception $exception) {
-                switch (get_class($exception->getPrevious())) {
-                    case BookingNotAvailableException::class:
-                        return $this->renderCardByExceptions($exception->getPrevious(), 'Бронирование временно недоступно.');
-                    case InsufficientlyFreePlacesException::class:
-                        return $this->renderCardByExceptions($exception->getPrevious(), 'Недостаточно свободных мест.');
-                }
-            }
+            $bus->dispatch($command);
 
             return $this->renderInfoCard('Бронь успешно создана');
         }
