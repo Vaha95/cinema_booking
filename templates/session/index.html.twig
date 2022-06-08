@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SessionController!{% endblock %}
+
+{% block body %}
+<div class="uk-child-width-1-2@l" uk-grid>
+    {% for session in sessions %}
+        <div>
+            <div class="uk-card uk-card-default uk-card-large uk-card-body">
+                <h3 class="uk-card-title uk-text-center">{{ session.name }}</h3>
+                <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                    <li><a href="#">Инфо</a></li>
+                    <li><a href="#">Забронировать</a></li>
+                </ul>
+                <ul class="uk-switcher uk-margin">
+                    <li>
+                        <div class="uk-padding-small uk-text-center">Свободных мест {{ session.freePlaces }}</div>
+                            <div class="uk-padding-small uk-text-center">{{ session.startAt }} - {{ session.endAt }}</div>
+                        <div class="uk-padding-small uk-grid-match uk-text-center uk-child-width-1-2@m uk-child-width-1-2@x uk-row-divider" uk-grid>
+                            <div class="uk-row-divider">
+                                <span uk-icon="calendar"></span>
+                                <span>{{ session.date }}</span>
+                            </div>
+                            <div>
+                                <span uk-icon="clock"></span>
+                                <span>{{ session.duration }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <form action="/booking" method="post">
+                            <input type="hidden" name="session" value="{{ session.id }}">
+                            <input class="uk-input uk-form-blank uk-form-width-large" name="name" type="text" placeholder="Имя">
+                            <div>+7 <input class="uk-input uk-form-blank uk-form-width-medium" type="tel" id="phone" name="phone" pattern="9[0-9]{9}" placeholder="Номер телефона"></div>
+                            <input class="uk-input uk-form-blank uk-form-width-large" name="places" type="number" max="{{ session.freePlaces }}" placeholder="Количество мест">
+                            <div class="uk-padding-small uk-text-center"><button class="uk-button uk-button-default uk-width-1-1 uk-margin-small-bottom">Submit</button></div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
