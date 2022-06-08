@@ -367,6 +367,9 @@
     "symfony/doctrine-bridge": {
         "version": "v6.1.0"
     },
+    "symfony/doctrine-messenger": {
+        "version": "v6.1.0"
+    },
     "symfony/dom-crawler": {
         "version": "v6.1.0"
     },
@@ -440,6 +443,18 @@
     "symfony/intl": {
         "version": "v6.1.0"
     },
+    "symfony/lock": {
+        "version": "6.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.2",
+            "ref": "a1c8800e40ae735206bb14586fdd6c4630a51b8d"
+        },
+        "files": [
+            "config/packages/lock.yaml"
+        ]
+    },
     "symfony/mailer": {
         "version": "6.1",
         "recipe": {
@@ -460,6 +475,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "6.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.0",
+            "ref": "2523f7d31488903e247a522e760dc279be7f7aaf"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/mime": {
         "version": "v6.1.0"

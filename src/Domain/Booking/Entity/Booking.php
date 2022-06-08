@@ -4,6 +4,7 @@ namespace App\Domain\Booking\Entity;
 
 use App\Domain\Booking\Entity\ValueObject\Customer;
 use App\Domain\Booking\Repository\BookingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
@@ -24,9 +25,18 @@ class Booking
     #[ORM\Column(type: 'integer')]
     private int $countOfSeats;
 
-    #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
+    #[ORM\ManyToOne(targetEntity: Session::class, cascade: ["persist"], inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
     private Session $session;
+
+    public function __construct(Uuid $id, int $countOfSeats, Customer $customer, Session $session)
+    {
+        $this->id = $id;
+        $this->session = $session;
+        $this->customer = $customer;
+        $this->countOfSeats = $countOfSeats;
+        $this->bookingDateTime = new \DateTimeImmutable();
+    }
 
     public function getId(): Uuid
     {
@@ -51,25 +61,5 @@ class Booking
     public function getSession(): Session
     {
         return $this->session;
-    }
-
-    private function setBookingDateTime(\DateTimeImmutable $bookingDateTime): void
-    {
-        $this->bookingDateTime = $bookingDateTime;
-    }
-
-    private function setCountOfSeats(int $countOfSeats): void
-    {
-        $this->countOfSeats = $countOfSeats;
-    }
-
-    private function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
-    }
-
-    private function setSession(?Session $session): void
-    {
-        $this->session = $session;
     }
 }
