@@ -5,6 +5,7 @@ namespace App\Tests\Unit\Domain\Booking\Entity;
 use App\Domain\Booking\Entity\CinemaHall;
 use App\Domain\Booking\Entity\Film;
 use App\Domain\Booking\Entity\Session;
+use App\Domain\Booking\Exception\InsufficientlyFreePlacesException;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
@@ -12,7 +13,47 @@ use TypeError;
 
 class SessionTest extends TestCase
 {
-    public function testCustomerValidate(): void
+    public function testBookingMethodFail(): void
+    {
+        $this->expectException(InsufficientlyFreePlacesException::class);
+
+        $id = Uuid::v4();
+        $startAt = new \DateTimeImmutable();
+        $film = $this->createMock(Film::class);
+        $cinemaHall = $this->createMock(CinemaHall::class);
+        $places = 80;
+
+        $cinemaHall
+            ->method('getHallCapacity')
+            ->willReturn($places);
+
+        $session = new Session($id, $film, $cinemaHall, $startAt);
+        $session->bookingOrder(180, 'Test', '9001002030');
+    }
+
+    public function testBookingMethod(): void
+    {
+        $id = Uuid::v4();
+        $startAt = new \DateTimeImmutable();
+        $film = $this->createMock(Film::class);
+        $cinemaHall = $this->createMock(CinemaHall::class);
+        $places = 80;
+        $bookPlaces = 10;
+
+        $cinemaHall
+            ->method('getHallCapacity')
+            ->willReturn($places);
+
+        $session = new Session($id, $film, $cinemaHall, $startAt);
+
+        $session->bookingOrder($bookPlaces, 'Test', '9001002030');
+
+        $this->assertEquals($places - $bookPlaces, $session->getFreePlaces());
+        $this->assertCount(1, $session->getBookings());
+
+    }
+
+    public function testSessionCreated(): void
     {
         $id = Uuid::v4();
         $startAt = new \DateTimeImmutable();
@@ -35,16 +76,16 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @dataProvider customerValidateFailDataProvider
+     * @dataProvider sessionCreatedFailDataProvider
      */
-    public function testCustomerValidateFail(array $arguments): void
+    public function testSessionCreatedFail(array $arguments): void
     {
         $this->expectException(TypeError::class);
 
         new Film(...$arguments);
     }
 
-    public function customerValidateFailDataProvider(): \Generator
+    public function sessionCreatedFailDataProvider(): \Generator
     {
         $id = Uuid::v4();
         $startAt = new \DateTimeImmutable();

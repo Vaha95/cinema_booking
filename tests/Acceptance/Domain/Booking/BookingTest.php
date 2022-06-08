@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Acceptance\Booking;
+namespace App\Tests\Acceptance\Domain\Booking;
 
 class BookingTest extends Acceptance
 {
