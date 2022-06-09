@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Tests\Functional\Domain\Booking\Command;
+namespace App\Tests\Functional\Domain\Booking\Command\Handler;
 
+use App\Domain\Booking\Command\BookingCommand;
 use App\Domain\Booking\Entity\Booking;
 use App\Tests\Functional\Domain\Booking\TestCase;
 
@@ -11,12 +12,15 @@ class BookingPlacesHandlerTest extends TestCase
     {
         $em = $this->getEntityManager();
 
-        $session = $this->getSession($em);
-        $name = 'TestName';
-        $phone = '9011111111';
-        $places = 7;
+        $bus = $this->getCommandBus();
 
-        $this->sendCommand($session, $name, $phone, $places, $em);
+        $command = new BookingCommand();
+        $command->session = $session = $this->getSession($em);
+        $command->name = $name = 'TestName';
+        $command->phone = $phone = '9011111111';
+        $command->places = $places = 7;
+
+        $bus->dispatch($command);
 
         /** @var Booking[] $booking */
         $booking = $this->getEntityManager()?->getRepository(Booking::class)->findBy(['session' => $session->getId()]);

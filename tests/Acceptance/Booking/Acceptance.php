@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Acceptance\Domain\Booking;
+namespace App\Tests\Acceptance\Booking;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
