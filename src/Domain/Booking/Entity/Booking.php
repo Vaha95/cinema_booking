@@ -2,9 +2,9 @@
 
 namespace App\Domain\Booking\Entity;
 
+use App\Domain\Booking\Assertion\PositiveRealNumberAssertion;
 use App\Domain\Booking\Entity\ValueObject\Customer;
 use App\Domain\Booking\Repository\BookingRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
@@ -31,6 +31,8 @@ class Booking
 
     public function __construct(Uuid $id, int $countOfSeats, Customer $customer, Session $session)
     {
+        PositiveRealNumberAssertion::assert($countOfSeats);
+
         $this->id = $id;
         $this->session = $session;
         $this->customer = $customer;

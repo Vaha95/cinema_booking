@@ -31,8 +31,8 @@ class SessionController extends Controller
         ]);
     }
 
-    #[Route('/booking', name: 'app_booking')]
-    public function booking(Request $request, MessageBusInterface $bus, LoggerInterface $logger): Response
+    #[Route('/booking', name: 'app_booking', methods: ['POST'])]
+    public function booking(Request $request, MessageBusInterface $bus): Response
     {
         $command = new BookingCommand();
         $bookingForm = $this->createForm(BookingType::class, $command, [

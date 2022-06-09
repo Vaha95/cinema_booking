@@ -78,13 +78,17 @@ class Session
         return $this->cinemaHall->getHallCapacity() - $occupiedPlaces;
     }
 
-    public function assertCanBookOrder(int $countOfSeats): bool
+    public function assertCanBookOrder(int $countOfSeats): void
     {
-        return $this->getFreePlaces() >= $countOfSeats;
+        $freePlaces = $this->getFreePlaces();
+        if ($freePlaces < $countOfSeats) {
+            throw new InsufficientlyFreePlacesException(sprintf('free places: %d, seats requested: %d', $freePlaces, $countOfSeats));
+        }
     }
 
     public function bookingOrder(int $countOfSeats, string $name, string $phone): void
     {
+        $this->assertCanBookOrder($countOfSeats);
         $customer = CustomerFactory::create($name, $phone);
         $this->bookings->add(BookingFactory::create($countOfSeats, $customer, $this));
     }

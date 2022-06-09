@@ -31,17 +31,17 @@ class PlacesRequestExistValidator extends ConstraintValidator
         /** @var Session|null $session */
         $session = $this->propertyAccessor->getValue($value, $constraint->sessionField);
 
-        if ($session->assertCanBookOrder($requiredPlaces)) {
-            return;
+        try {
+            $session->assertCanBookOrder($requiredPlaces);
+        } catch (\Exception $exception) {
+            $this->context->addViolation(
+                $constraint->message,
+                [
+                    '{{ require }}' => $requiredPlaces,
+                    '{{ free }}' => $session->getFreePlaces(),
+                ]
+            );
         }
-
-        $this->context->addViolation(
-            $constraint->message,
-            [
-                '{{ require }}' => $requiredPlaces,
-                '{{ free }}' => $session->getFreePlaces(),
-            ]
-        );
     }
 
     private static function assertConstraintInstanceOfPlacesRequestExist(Constraint $constraint): void
