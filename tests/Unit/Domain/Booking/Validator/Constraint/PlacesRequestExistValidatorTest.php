@@ -41,7 +41,7 @@ class PlacesRequestExistValidatorTest extends TestCase
         parent::tearDown();
     }
 
-    public function testInstance(): void
+    public function testInvalidConstraint(): void
     {
         $session = $this->createMock(Session::class);
         $this->expectException(InvalidArgumentException::class);
